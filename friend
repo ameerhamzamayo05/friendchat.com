@@ -1,0 +1,973 @@
+# wwwfriendchat.com 
+Build a complete production-ready Admin Panel for a Facebook-like social media platform.
+
+Requirements:
+
+- Use Node.js + Express.js backend
+- Use modern HTML, CSS, and JavaScript frontend
+- Mobile responsive design
+- Secure authentication system
+- JWT authentication
+- Environment variables using .env
+- Do NOT hardcode passwords, secrets, API keys, or credentials
+- Add proper .gitignore file
+- Add GitHub-safe configuration
+- Add deployment-ready configuration for Render, Railway, VPS, and Replit
+- Add health check endpoint (/health)
+- Use dynamic PORT:
+  const PORT = process.env.PORT || 5000;
+
+Admin Login:
+- Username field
+- Password field
+- Secure session management
+- Logout functionality
+
+Admin Dashboard:
+- Total Users
+- Total Posts
+- Total Comments
+- Total Messages
+- Recent Activity
+- User Management
+- Content Management
+- Reports Section
+- Settings Page
+
+Security:
+- Helmet
+- CORS
+- Rate Limiting
+- Input Validation
+- XSS Protection
+- CSRF Protection
+- Secure Cookies
+- Password Hashing using bcrypt
+
+GitHub Requirements:
+- Create package.json
+- Create .gitignore
+- Create README.md
+- No secrets in repository
+- No exposed credentials
+- No hardcoded passwords
+- No vulnerable code
+- No deprecated packages
+
+Deployment Requirements:
+- Must run successfully after:
+  npm install
+  npm start
+
+- Add startup scripts
+- Fix all common deployment issues
+- Ensure compatibility with GitHub, Render, Railway, Replit, and VPS hosting.
+
+Project Structure:
+
+/public
+/src
+/routes
+/controllers
+/middleware
+/models
+/config
+/utils
+
+Generate complete production-ready code with no placeholders, proper error handling, clean architecture, and deployment-ready configuration.<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SocialBook Login</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-box">
+        <h1>SocialBook</h1>
+        <p>Connect with friends and the world around you.</p>
+
+        <form id="loginForm">
+            <input type="text" placeholder="Email or Username" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <button class="create-btn">Create New Account</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f0f2f5;
+}
+
+.login-container{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-box{
+    background:#fff;
+    padding:30px;
+    width:350px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
+}
+
+.login-box h1{
+    color:#1877f2;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.login-box p{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button[type="submit"]{
+    background:#1877f2;
+    color:white;
+}
+
+.create-btn{
+    margin-top:10px;
+    background:#42b72a;
+    color:white;
+}document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    alert("Login System Coming Soon!");
+});socialbook/
+│
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── PostCard.jsx
+│   │   │   ├── StoryCard.jsx
+│   │   │   ├── FriendCard.jsx
+│   │   │   └── ChatBox.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── Friends.jsx
+│   │   │   ├── Messages.jsx
+│   │   │   ├── Notifications.jsx
+│   │   │   └── Settings.jsx
+│   │   │
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   └── package.json
+│
+├── server/
+│   ├── config/
+│   │   └── db.js
+│   │
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Post.js
+│   │   ├── Comment.js
+│   │   ├── Message.js
+│   │   ├── Notification.js
+│   │   └── FriendRequest.js
+│   │
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
+│   ├── utils/
+│   ├── socket/
+│   └── server.js
+│
+├── admin/
+│   ├── dashboard.html
+│   ├── users.html
+│   ├── reports.html
+│   └── settings.html
+│
+├── .env
+├── .gitignore
+├── README.md
+└── package.jsonconst mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  username: {
+    type: String,
+    unique: true
+  },
+  email: {
+    type: String,
+    unique: true
+  },
+  password: String,
+  profilePic: String,
+  coverPhoto: String,
+  bio: String,
+  friends: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }],
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }],
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }]
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model("User", userSchema);
+const mongoose = require("mongoose");
+
+const postSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+  text: String,
+  image: String,
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }]
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model("Post", postSchema); 
+node_modules
+.env
+dist
+build
+uploads
+PORT=5000
+
+MONGO_URI=YOUR_MONGODB_URL
+
+JWT_SECRET=mySuperSecretKey123
+
+ADMIN_USERNAME=ameerhamzamayo
+
+ADMIN_PASSWORD=ameerhamzamayo
+PORT=5000
+
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@cluster0.mongodb.net/socialbook
+
+JWT_SECRET=mySuperSecretKey123
+
+ADMIN_USERNAME=ameerhamzamayo
+
+ADMIN_PASSWORD=ameerhamzamayo
+const mongoose = require("mongoose");
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+
+    console.log("MongoDB Connected");
+  } catch (error) {
+    console.error("Database Error:", error.message);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
+npm install express mongoose dotenv bcryptjs jsonwebtoken cors helmet
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+
+const connectDB = require("./config/db");
+
+const app = express();
+
+connectDB();
+
+app.use(express.json());
+app.use(cors());
+app.use(helmet());
+
+app.get("/", (req, res) => {
+  res.send("SocialBook API Running");
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server Running On Port ${PORT}`);
+});const mongoose = require("mongoose");
+
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+
+    username: {
+      type: String,
+      required: true,
+      unique: true
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+
+    password: {
+      type: String,
+      required: true
+    },
+
+    profilePic: {
+      type: String,
+      default: ""
+    },
+
+    bio: {
+      type: String,
+      default: ""
+    }
+  },
+  {
+    timestamps: true
+  }
+);
+
+module.exports = mongoose.model("User", UserSchema);
+const authRoutes = require("./routes/auth");
+
+app.use("/api/auth", authRoutes);
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+
+const router = express.Router();
+
+/*
+REGISTER
+*/
+router.post("/register", async (req, res) => {
+  try {
+    const { name, username, email, password } = req.body;
+
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists"
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      username,
+      email,
+      password: hashedPassword
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Registration successful"
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+/*
+LOGIN
+*/
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials"
+      });
+    }
+
+    const match = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!match) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials"
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d"
+      }
+    );
+
+    res.json({
+      success: true,
+      token
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+module.exports = router;
+const jwt = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
+
+  const authHeader =
+    req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({
+      message: "Access denied"
+    });
+  }
+
+  try {
+    const token =
+      authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    req.user = decoded;
+
+    next();
+
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid token"
+    });
+  }
+}; const express = require("express");
+const auth = require("../middleware/auth");
+
+const router = express.Router();
+
+router.get("/profile", auth, (req, res) => {
+
+  res.json({
+    success: true,
+    user: req.user
+  });
+
+});
+
+module.exports = router;
+PORT=5000
+
+MONGO_URI=YOUR_MONGODB_URL
+
+JWT_SECRET=mySuperSecretKey123
+
+ADMIN_USERNAME=ameerhamzamayo
+
+ADMIN_PASSWORD=ameerhamzamayo
+npm install express mongoose dotenv bcryptjs jsonwebtoken cors helmet
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f0f2f5;
+display:flex;
+}
+
+.sidebar{
+width:250px;
+height:100vh;
+background:#1877f2;
+color:white;
+padding:20px;
+position:fixed;
+}
+
+.sidebar h2{
+margin-bottom:30px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar ul li{
+padding:15px 10px;
+cursor:pointer;
+border-radius:8px;
+margin-bottom:5px;
+}
+
+.sidebar ul li:hover{
+background:rgba(255,255,255,0.2);
+}
+
+.main{
+margin-left:250px;
+padding:20px;
+width:100%;
+}
+
+.header{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.card h3{
+color:#555;
+margin-bottom:10px;
+}
+
+.card p{
+font-size:30px;
+font-weight:bold;
+color:#1877f2;
+}
+
+.table-box{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.delete{
+background:red;
+color:white;
+}
+
+.view{
+background:#1877f2;
+color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>Admin Panel</h2>
+
+<ul>
+<li>Dashboard</li>
+<li>Users</li>
+<li>Posts</li>
+<li>Comments</li>
+<li>Reports</li>
+<li>Settings</li>
+<li onclick="logout()">Logout</li>
+</ul>
+</div>
+
+<div class="main">
+
+<div class="header">
+<h1>Welcome Admin</h1>
+<p>Manage your social media platform</p>
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Users</h3>
+<p id="users">1250</p>
+</div>
+
+<div class="card">
+<h3>Total Posts</h3>
+<p id="posts">845</p>
+</div>
+
+<div class="card">
+<h3>Total Comments</h3>
+<p id="comments">5210</p>
+</div>
+
+<div class="card">
+<h3>Total Reports</h3>
+<p id="reports">18</p>
+</div>
+
+</div>
+
+<div class="table-box">
+
+<h2>Recent Users</h2>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="userTable">
+
+<tr>
+<td>Ameer Hamza</td>
+<td>ameer@example.com</td>
+<td>Active</td>
+<td>
+<button class="view">View</button>
+<button class="delete">Delete</button>
+</td>
+</tr>
+
+<tr>
+<td>Ali</td>
+<td>ali@example.com</td>
+<td>Active</td>
+<td>
+<button class="view">View</button>
+<button class="delete">Delete</button>
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+function logout(){
+window.location.href="/logout";
+}
+</script>
+
+</body>
+</html>
+<div class="header">
+<h1>Welcome, Ameer Hamza</h1>
+<p>Admin: ameerhamzamayo05@gmail.com</p>
+<p>Manage your social media platform</p>
+</div>
+<button id="darkModeBtn">🌙 Dark Mode</button>
+<script>
+const btn = document.getElementById("darkModeBtn");
+
+btn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+});
+</script>
+.dark{
+  background:#121212;
+  color:white;
+}
+
+.dark .header,
+.dark .card,
+.dark .table-box{
+  background:#1e1e1e;
+  color:white;
+}
+
+.dark table{
+  color:white;
+}
+<input
+  type="text"
+  id="searchUser"
+  placeholder="Search Users..."
+  style="padding:10px;width:100%;margin-bottom:15px;"
+>
+<script>
+document
+.getElementById("searchUser")
+.addEventListener("keyup", function(){
+
+  const filter =
+    this.value.toLowerCase();
+
+  const rows =
+    document.querySelectorAll("#userTable tr");
+
+  rows.forEach(row => {
+
+    const text =
+      row.innerText.toLowerCase();
+
+    row.style.display =
+      text.includes(filter)
+      ? ""
+      : "none";
+
+  });
+
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<canvas id="analyticsChart"></canvas>
+<script>
+const ctx =
+document.getElementById("analyticsChart");
+
+new Chart(ctx, {
+  type: "bar",
+
+  data: {
+
+    labels: [
+      "Users",
+      "Posts",
+      "Comments",
+      "Reports"
+    ],
+
+    datasets: [{
+      label: "Statistics",
+
+      data: [
+        1250,
+        845,
+        5210,
+        18
+      ]
+    }]
+  }
+});
+</script>
+const User =
+require("./models/User");
+
+app.get("/api/admin/stats",
+async (req,res)=>{
+
+  const users =
+    await User.countDocuments();
+
+  res.json({
+    users
+  });
+
+});
+<script>
+
+async function loadStats(){
+
+  const res =
+    await fetch("/api/admin/stats");
+
+  const data =
+    await res.json();
+
+  document
+    .getElementById("users")
+    .innerText = data.users;
+
+}
+
+loadStats();
+
+</script>
+app.get(
+"/api/admin/users",
+async (req,res)=>{
+
+  const keyword =
+    req.query.search || "";
+
+  const users =
+    await User.find({
+
+      username:{
+        $regex:keyword,
+        $options:"i"
+      }
+
+    }).limit(20);
+
+  res.json(users);
+
+});
+app.get(
+"/api/admin/users",
+async (req,res)=>{
+
+  const keyword =
+    req.query.search || "";
+
+  const users =
+    await User.find({
+
+      username:{
+        $regex:keyword,
+        $options:"i"
+      }
+
+    }).limit(20);
+
+  res.json(users);
+
+});
+<script>
+
+async function searchUsers(keyword){
+
+  const res =
+  await fetch(
+  `/api/admin/users?search=${keyword}`
+  );
+
+  const users =
+  await res.json();
+
+  const table =
+  document.getElementById("userTable");
+
+  table.innerHTML = "";
+
+  users.forEach(user => {
+
+    table.innerHTML += `
+      <tr>
+        <td>${user.username}</td>
+        <td>${user.email}</td>
+        <td>Active</td>
+        <td>
+          <button class="view">
+            View
+          </button>
+        </td>
+      </tr>
+    `;
+
+  });
+
+}
+
+document
+.getElementById("searchUser")
+.addEventListener(
+"keyup",
+e => searchUsers(e.target.value)
+);
+
+</script>
